@@ -42,6 +42,12 @@ export class AppGuardian extends GuardianSmart<AppUserType, AppRegisterType> {
         return response.data.me;
       });
   }
+
+  public async load(): Promise<void> {
+    await super.load();
+
+    Promise.resolve();
+  }
 }
 
 /**

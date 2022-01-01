@@ -1,7 +1,18 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Card, Checkbox, Space } from "antd";
 
-export function TodoCard(props) {
+export function TodoCard(props: {
+  title: string;
+  description: string;
+  index: number;
+  checked: boolean;
+  editHandler: (indexTodo: number, newValue: boolean) => void;
+  deleteHandler: (
+    titleTodo: string,
+    descriptionTodo: string,
+    checkedTodo: boolean
+  ) => void;
+}) {
   return (
     <Card
       title={props.title}
@@ -10,6 +21,7 @@ export function TodoCard(props) {
       }}
     >
       <Checkbox
+        checked={props.checked}
         onChange={() => {
           props.editHandler(props.index, !props.checked);
         }}

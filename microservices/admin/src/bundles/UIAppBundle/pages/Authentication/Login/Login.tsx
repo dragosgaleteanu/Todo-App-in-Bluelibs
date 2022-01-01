@@ -1,22 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useGuardian, useRouter, useTranslate } from "@bluelibs/x-ui";
+import { use, useRouter, useTranslate } from "@bluelibs/x-ui";
 import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
 import { Routes } from "@bundles/UIAppBundle";
 import { ApolloError } from "@apollo/client";
-import {
-  Layout,
-  Form,
-  Input,
-  Checkbox,
-  Button,
-  Space,
-  Row,
-  Col,
-  Alert,
-  Card,
-  notification,
-} from "antd";
+import { Form, Input, Button, Row, Col, Alert, Card, notification } from "antd";
+import { RedirectUserService } from "@bundles/UIAppBundle/services/RedirectUser.service";
+import { useAppGuardian } from "@bundles/UIAppBundle/services/AppGuardian";
 
 type FormInput = {
   username: string;
@@ -24,21 +14,25 @@ type FormInput = {
 };
 
 export function Login() {
-  const guardian = useGuardian();
-
+  const guardian = useAppGuardian();
+  const redirectUserService = use(RedirectUserService);
   const tl = useTranslate("authentication.login");
   const router = useRouter();
   const [loginError, setLoginError] = useState<ApolloError>(null);
-  // const { register, handleSubmit, errors } = useForm<FormInput>();
   const onSubmit = (data: FormInput) => {
     const { username, password } = data;
+
     guardian
       .login(username, password)
-      .then(() => {
+      .then(async () => {
         notification.success({
           message: "Welcome!",
         });
-        router.go(Routes.HOME);
+
+        const nextRoute =
+          await redirectUserService.redirectUserAfterAuthentication();
+
+        router.go(Routes[nextRoute]);
       })
       .catch((err) => {
         setLoginError(err);

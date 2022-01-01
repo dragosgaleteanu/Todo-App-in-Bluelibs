@@ -1,8 +1,9 @@
-import { useGuardian, useRouter, useTranslate } from "@bluelibs/x-ui";
+import { use, useGuardian, useRouter, useTranslate } from "@bluelibs/x-ui";
 import { useState } from "react";
 import { LockOutlined } from "@ant-design/icons";
-import { Routes } from "@bundles/UIAppBundle";
 import { Form, Input, Button, Row, Col, Alert, Card } from "antd";
+import { RedirectUserService } from "@bundles/UIAppBundle/services/RedirectUser.service";
+import { Routes } from "@bundles/UIAppBundle";
 
 type FormInput = {
   email: string;
@@ -10,18 +11,21 @@ type FormInput = {
 };
 
 export function ResetPassword(props: { token: string }) {
-  const guardian = useGuardian();
-  const router = useRouter();
   const tl = useTranslate("authentication.resetPassword");
   const [submitError, setSubmitError] = useState(null);
   const [isCompleted, setIsComplete] = useState(false);
+  const redirectUserService = use(RedirectUserService);
+  const guardian = useGuardian();
+  const router = useRouter();
 
   const onSubmit = (data: FormInput) => {
     const { email, password } = data;
+
     guardian
       .resetPassword(email, props.token, password)
       .then(() => {
         setIsComplete(true);
+
         setTimeout(() => {
           router.go(Routes.HOME);
         }, 4500);

@@ -103,7 +103,7 @@ export type Mutation = {
   TodosInsert?: Maybe<Scalars['Boolean']>;
   TodosRemove?: Maybe<Scalars['Boolean']>;
   TodosUpdate?: Maybe<Scalars['Boolean']>;
-  register: RegistrationResponse;
+  userRegister?: Maybe<Scalars['Boolean']>;
   changePassword?: Maybe<Scalars['Boolean']>;
   login: LoginResponse;
   logout?: Maybe<Scalars['Boolean']>;
@@ -177,8 +177,8 @@ export type MutationTodosUpdateArgs = {
 };
 
 
-export type MutationregisterArgs = {
-  input: RegistrationInput;
+export type MutationuserRegisterArgs = {
+  input: UserRegisterInputInput;
 };
 
 
@@ -272,19 +272,6 @@ export type QueryOptionsInput = {
   skip?: Maybe<Scalars['Int']>;
   /** This is the Nova body that will get merged deeply with your request body. Useful for passing arguments. */
   sideBody?: Maybe<Scalars['EJSON']>;
-};
-
-export type RegistrationInput = {
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type RegistrationResponse = {
-  __typename?: 'RegistrationResponse';
-  /** Please not that if the user is required to validate his email for logging in, token will be null */
-  token?: Maybe<Scalars['String']>;
 };
 
 export type ResetPasswordInput = {
@@ -390,11 +377,16 @@ export type UserProfileInput = {
   lastName: Scalars['String'];
 };
 
+export type UserRegisterInputInput = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
 export enum UserRole {
   ADMIN = 'ADMIN',
-  SALES = 'SALES',
-  MANAGER = 'MANAGER',
-  END_CUSTOMER = 'END_CUSTOMER'
+  USER = 'USER'
 }
 
 export type UserTodo = {

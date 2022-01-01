@@ -1,9 +1,4 @@
-import {
-  Service,
-  Inject,
-  EventManager,
-  ContainerInstance,
-} from "@bluelibs/core";
+import { Service, ContainerInstance } from "@bluelibs/core";
 import { ObjectId } from "@bluelibs/ejson";
 import { UsersCollection } from "../collections";
 import { TodosInsertInput } from "./inputs/TodosInsert.input";
@@ -32,6 +27,7 @@ export class TodoService {
     );
   }
   public async update(input: TodosRemoveInput, userId: ObjectId) {
+    // removes todo
     const usersCollection = this.container.get(UsersCollection);
 
     await usersCollection.updateOne(
@@ -46,6 +42,7 @@ export class TodoService {
     );
   }
   public async remove(input: TodosUpdateInput, userId: ObjectId) {
+    // updates todo
     const usersCollection = this.container.get(UsersCollection);
 
     await usersCollection.updateOne(

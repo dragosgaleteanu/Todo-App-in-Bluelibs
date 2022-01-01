@@ -1,24 +1,14 @@
-import { useGuardian, useRouter, useTranslate } from "@bluelibs/x-ui";
-import React, { useEffect, useState } from "react";
+import { use, useRouter, useTranslate } from "@bluelibs/x-ui";
+import { useEffect, useState } from "react";
+import { Row, Col, Alert, Card } from "antd";
+import { RedirectUserService } from "@bundles/UIAppBundle/services/RedirectUser.service";
 import { Routes } from "@bundles/UIAppBundle";
-import {
-  Layout,
-  Form,
-  Input,
-  Checkbox,
-  Button,
-  Space,
-  Row,
-  Col,
-  Alert,
-  Card,
-  notification,
-} from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { useAppGuardian } from "@bundles/UIAppBundle/services/AppGuardian";
 
 export function VerifyEmail(props: { token: string }) {
   const { token } = props;
-  const guardian = useGuardian();
+  const redirectUserService = use(RedirectUserService);
+  const guardian = useAppGuardian();
   const router = useRouter();
   const tl = useTranslate("authentication.verifyEmail");
 
@@ -30,11 +20,15 @@ export function VerifyEmail(props: { token: string }) {
     setTimeout(() => {
       guardian
         .verifyEmail(token)
-        .then(() => {
+        .then(async () => {
           setIsVerifyingEmail(false);
           setIsEmailVerified(true);
-          setTimeout(() => {
-            router.go(Routes.DASHBOARD);
+
+          setTimeout(async () => {
+            const nextRoute =
+              await redirectUserService.redirectUserAfterAuthentication();
+
+            router.go(Routes[nextRoute]);
           }, 3500);
         })
         .catch((err) => {

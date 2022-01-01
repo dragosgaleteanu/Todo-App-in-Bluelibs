@@ -1,28 +1,19 @@
-import { useGuardian, useRouter, useTranslate } from "@bluelibs/x-ui";
-import React, { useState } from "react";
-import {
-  Layout,
-  Form,
-  Input,
-  Checkbox,
-  Button,
-  Space,
-  Row,
-  Col,
-  Alert,
-  Card,
-  notification,
-} from "antd";
+import { use, useGuardian, useRouter, useTranslate } from "@bluelibs/x-ui";
+import { useState } from "react";
+import { Form, Input, Button, Row, Col, Alert, Card } from "antd";
+import { RedirectUserService } from "@bundles/UIAppBundle/services/RedirectUser.service";
+import { Routes } from "@bundles/UIAppBundle";
 
 type FormInput = {
   email: string;
 };
 
 export function ForgotPassword() {
-  const guardian = useGuardian();
-  const router = useRouter();
   const t = useTranslate();
   const tl = useTranslate("authentication.forgotPassword");
+  const guardian = useGuardian();
+  const router = useRouter();
+
   const [submitError, setSubmitError] = useState(null);
   const [isCompleted, setIsComplete] = useState(false);
 
@@ -31,6 +22,8 @@ export function ForgotPassword() {
       .forgotPassword(data.email)
       .then(() => {
         setIsComplete(true);
+
+        router.go(Routes.HOME);
       })
       .catch((err) => {
         setSubmitError(err.toString());

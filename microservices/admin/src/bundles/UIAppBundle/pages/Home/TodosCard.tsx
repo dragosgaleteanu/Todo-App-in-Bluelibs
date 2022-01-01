@@ -5,7 +5,11 @@ import { Card, notification } from "antd";
 import { TodoCard } from "./TodoCard";
 import { TodoService } from "@bundles/UIAppBundle/services/Todo.service";
 
-export function TodosCard(props) {
+export function TodosCard(props: {
+  userId: string;
+  collectionStateChanged: boolean;
+  resetStateHandler: () => void;
+}) {
   const todoService = use(TodoService);
   const collection = use(UsersCollection);
   const [JSXComponent, setJSXComponent] = useState(
@@ -15,7 +19,11 @@ export function TodosCard(props) {
   );
   const [anyTodoEdited, setAnyTodoEdited] = useState(false);
 
-  const removeTodoHandler = (titleTodo, descriptionTodo, checkedTodo) => {
+  const removeTodoHandler = (
+    titleTodo: string,
+    descriptionTodo: string,
+    checkedTodo: boolean
+  ) => {
     todoService
       .remove({
         title: titleTodo,
@@ -33,7 +41,7 @@ export function TodosCard(props) {
       });
   };
 
-  const editTodoHandler = (indexTodo, newValue) => {
+  const editTodoHandler = (indexTodo: number, newValue: boolean) => {
     todoService
       .update({
         index: indexTodo,
@@ -49,27 +57,6 @@ export function TodosCard(props) {
         console.error(err.message);
       });
   };
-
-  if (
-    props.additionalTodo.title !== "" &&
-    props.additionalTodo.description !== ""
-  ) {
-    todoService
-      .insert({
-        title: props.additionalTodo.title,
-        description: props.additionalTodo.description,
-      })
-      .then((data) => {
-        notification.success({
-          message: "Todo has been successfully added!",
-        });
-        props.postAdditionHandler();
-        setAnyTodoEdited(true);
-      })
-      .catch((err) => {
-        console.error(err.message);
-      });
-  }
 
   useEffect(() => {
     collection
@@ -108,7 +95,8 @@ export function TodosCard(props) {
     if (anyTodoEdited === true) {
       setAnyTodoEdited(false);
     }
-  }, [anyTodoEdited]);
+    props.resetStateHandler();
+  }, [props.collectionStateChanged, anyTodoEdited]);
 
   return JSXComponent;
 }

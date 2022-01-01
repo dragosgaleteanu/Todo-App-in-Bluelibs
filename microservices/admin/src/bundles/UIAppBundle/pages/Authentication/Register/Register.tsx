@@ -1,20 +1,8 @@
-import { useGuardian, useRouter, useTranslate } from "@bluelibs/x-ui";
-import React, { useState } from "react";
+import { use, useRouter, useTranslate } from "@bluelibs/x-ui";
+import { useState } from "react";
+import { Form, Input, Button, Row, Col, Alert, Card, notification } from "antd";
 import { Routes } from "@bundles/UIAppBundle";
-import {
-  Layout,
-  Form,
-  Input,
-  Checkbox,
-  Button,
-  Space,
-  Row,
-  Col,
-  Alert,
-  Card,
-  notification,
-} from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { UserRegistrationService } from "@bundles/UIAppBundle/services/UserRegistration.service";
 
 type FormInput = {
   firstName: string;
@@ -24,28 +12,25 @@ type FormInput = {
 };
 
 export function Register() {
-  const guardian = useGuardian();
-  const router = useRouter();
   const tl = useTranslate("authentication.register");
+  const router = useRouter();
   const [submitError, setSubmitError] = useState(null);
+  const userRegistrationService = use(UserRegistrationService);
 
   const onSubmit = (data: FormInput) => {
     const { email, password, firstName, lastName } = data;
-    guardian
-      .register({
-        email,
-        firstName,
-        lastName,
-        password,
-      })
+
+    userRegistrationService
+      .register({ email, firstName, lastName, password })
       .then((token) => {
         notification.success({
           message: tl("success.header"),
           description: tl("success.description"),
         });
 
-        setSubmitError(null);
         router.go(Routes.HOME);
+
+        setSubmitError(null);
       })
       .catch((err) => {
         setSubmitError(err.toString());
