@@ -1,47 +1,18 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGuardian, useRouter } from "@bluelibs/x-ui";
 import {
   LogoutOutlined,
-  FileAddOutlined,
   LoginOutlined,
   UserAddOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 import { Routes } from "@bundles/UIAppBundle";
 import { Button, Space, Row, Col, Card, Input } from "antd";
-import { TodosCard } from "./TodosCard";
 
 export function Home() {
   const guardian = useGuardian();
   const router = useRouter();
   const style = { minHeight: "100vh" };
-
-  const initialNewTodo = {
-    title: "",
-    description: "",
-    checked: false,
-  };
-
-  const [newTodo, setNewTodo] = useState(initialNewTodo);
-  const [submittedNewTodo, setSubmittedNewTodo] = useState(newTodo);
-
-  const handleTitleChange = (e) => {
-    setNewTodo((prevNewTodo) => ({
-      ...prevNewTodo,
-      title: e.target.value,
-    }));
-  };
-
-  const handleDescriptionChange = (e) => {
-    setNewTodo((prevNewTodo) => ({
-      ...prevNewTodo,
-      description: e.target.value,
-    }));
-  };
-
-  const emptyNewTodoFieldsHandler = () => {
-    setSubmittedNewTodo(initialNewTodo);
-  };
 
   return (
     <Row justify="center" align="middle" style={style}>
@@ -55,43 +26,24 @@ export function Home() {
                 check them as done!
               </p>
               <br />
-              <Card title="Add a new task">
-                <Input
-                  placeholder="Enter title of todo"
-                  size="small"
-                  allowClear
-                  value={newTodo.title}
-                  onChange={handleTitleChange.bind(this)}
-                ></Input>
-                <Input.TextArea
-                  placeholder="Enter description of todo"
-                  size="large"
-                  showCount
-                  allowClear
-                  value={newTodo.description}
-                  onChange={handleDescriptionChange.bind(this)}
-                ></Input.TextArea>
-                <br />
+              <Link
+                to={router.path(Routes.TODOS, {
+                  params: {
+                    token: guardian.state.user._id.toLocaleString(),
+                  },
+                })}
+              >
                 <Button
-                  icon={<FileAddOutlined />}
+                  icon={<CalendarOutlined />}
                   style={{
-                    color: "#fff",
                     backgroundColor: "#3055c2",
-                  }}
-                  onClick={() => {
-                    setSubmittedNewTodo(newTodo);
-                    setNewTodo(initialNewTodo);
+                    color: "#fff",
                   }}
                 >
-                  Submit
+                  Navigate to your todos
                 </Button>
-              </Card>
+              </Link>
               <br />
-              <TodosCard
-                userId={guardian.state.user._id.toLocaleString()}
-                additionalTodo={submittedNewTodo}
-                postAdditionHandler={emptyNewTodoFieldsHandler}
-              />
             </p>
             <Space>
               <Button

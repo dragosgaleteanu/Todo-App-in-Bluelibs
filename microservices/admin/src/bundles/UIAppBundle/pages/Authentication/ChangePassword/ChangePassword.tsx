@@ -1,22 +1,15 @@
 import {
-  useGuardian,
   useUIComponents,
-  useRouter,
   useTranslate,
+  use,
+  useGuardian,
+  useRouter,
 } from "@bluelibs/x-ui";
 import { useState } from "react";
 import { LockOutlined } from "@ant-design/icons";
-import {
-  Form,
-  Input,
-  Button,
-  Row,
-  Col,
-  Alert,
-  Card,
-  PageHeader,
-  Layout,
-} from "antd";
+import { Form, Input, Button, Alert, Card, PageHeader } from "antd";
+import { RedirectUserService } from "@bundles/UIAppBundle/services/RedirectUser.service";
+import { Routes } from "@bundles/UIAppBundle";
 
 type FormInput = {
   oldPassword: string;
@@ -24,9 +17,9 @@ type FormInput = {
 };
 
 export function ChangePassword() {
+  const tl = useTranslate("authentication.changePassword");
   const guardian = useGuardian();
   const router = useRouter();
-  const tl = useTranslate("authentication.changePassword");
 
   const UIComponents = useUIComponents();
   const [submitError, setSubmitError] = useState(null);
@@ -34,10 +27,13 @@ export function ChangePassword() {
 
   const onSubmit = (data: FormInput) => {
     const { oldPassword, newPassword } = data;
+
     guardian
       .changePassword(oldPassword, newPassword)
       .then(() => {
         setIsComplete(true);
+
+        router.go(Routes.HOME);
       })
       .catch((err) => {
         setSubmitError(err.toString());

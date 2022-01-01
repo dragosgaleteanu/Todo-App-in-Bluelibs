@@ -8,6 +8,9 @@
     "generate:types": "cd microservices/admin ; npm run generate"
   },
   "dependencies": {
+    "@bluelibs/ui-apollo-bundle": "^1.0.2",
+    "@bluelibs/x-ui-guardian-bundle": "^1.2.1",
+    "@bluelibs/x-ui-react-bundle": "^1.0.4",
     "react-hook-form": "^7.22.5"
   },
   "bluelibs": {
